@@ -20,12 +20,15 @@ data class NotificationOptions(
     val isSticky: Boolean,
     val visibility: Int,
     val iconData: NotificationIconData?,
-    val buttons: List<NotificationButton>
+    val largeIconData: NotificationIconData?,
+    val buttons: List<NotificationButton>,
+    val todayNotificationData: TodayNotificationData?,
 ) {
     companion object {
         fun getData(context: Context): NotificationOptions {
             val prefs = context.getSharedPreferences(
-                PrefsKey.NOTIFICATION_OPTIONS_PREFS_NAME, Context.MODE_PRIVATE)
+                PrefsKey.NOTIFICATION_OPTIONS_PREFS_NAME, Context.MODE_PRIVATE
+            )
 
             val id = prefs.getInt(PrefsKey.NOTIFICATION_ID, 1000)
             val channelId = prefs.getString(PrefsKey.NOTIFICATION_CHANNEL_ID, null) ?: ""
@@ -40,7 +43,6 @@ data class NotificationOptions(
             val showWhen = prefs.getBoolean(PrefsKey.SHOW_WHEN, false)
             val isSticky = prefs.getBoolean(PrefsKey.IS_STICKY, true)
             val visibility = prefs.getInt(PrefsKey.VISIBILITY, 1)
-
             val iconDataJson = prefs.getString(PrefsKey.ICON_DATA, null)
             var iconData: NotificationIconData? = null
             if (iconDataJson != null) {
@@ -53,6 +55,30 @@ data class NotificationOptions(
                 )
             }
 
+            val largeIconDataJson = prefs.getString(PrefsKey.LARGE_ICON_DATA, null)
+            var largeIconData: NotificationIconData? = null
+            if (largeIconDataJson != null) {
+                val iconDataJsonObj = JSONObject(largeIconDataJson)
+                largeIconData = NotificationIconData(
+                    resType = iconDataJsonObj.getString("resType") ?: "",
+                    resPrefix = iconDataJsonObj.getString("resPrefix") ?: "",
+                    name = iconDataJsonObj.getString("name") ?: "",
+                    backgroundColorRgb = iconDataJsonObj.getString("backgroundColorRgb")
+                )
+            }
+            val todayNotificationDataJson = prefs.getString(PrefsKey.TODAY_DATA, null)
+            var todayNotificationData: TodayNotificationData? = null
+            if (todayNotificationDataJson != null) {
+                val todayDataJsonObj = JSONObject(todayNotificationDataJson)
+                todayNotificationData = TodayNotificationData(
+                    day = todayDataJsonObj.getInt("day"),
+                    gregorian = todayDataJsonObj.getString("gregorian"),
+                    solar = todayDataJsonObj.getString("solar"),
+                    hijri = todayDataJsonObj.getString("hijri"),
+                    titleColor = todayDataJsonObj.getString("titleColor"),
+                    subtitleColor = todayDataJsonObj.getString("subtitleColor"),
+                )
+            }
             val buttonsJson = prefs.getString(PrefsKey.BUTTONS, null)
             val buttons: MutableList<NotificationButton> = mutableListOf()
             if (buttonsJson != null) {
@@ -83,13 +109,16 @@ data class NotificationOptions(
                 isSticky = isSticky,
                 visibility = visibility,
                 iconData = iconData,
-                buttons = buttons
+                largeIconData = largeIconData,
+                buttons = buttons,
+                todayNotificationData = todayNotificationData
             )
         }
 
         fun putData(context: Context, map: Map<*, *>?) {
             val prefs = context.getSharedPreferences(
-                PrefsKey.NOTIFICATION_OPTIONS_PREFS_NAME, Context.MODE_PRIVATE)
+                PrefsKey.NOTIFICATION_OPTIONS_PREFS_NAME, Context.MODE_PRIVATE
+            )
 
             val id = map?.get(PrefsKey.NOTIFICATION_ID) as? Int ?: 1000
             val channelId = map?.get(PrefsKey.NOTIFICATION_CHANNEL_ID) as? String ?: ""
@@ -111,11 +140,24 @@ data class NotificationOptions(
                 iconDataJson = JSONObject(iconData).toString()
             }
 
+            val largeIconData = map?.get(PrefsKey.LARGE_ICON_DATA) as? Map<*, *>
+            var largeIconDataJson: String? = null
+            if (largeIconData != null) {
+                largeIconDataJson = JSONObject(largeIconData).toString()
+            }
+            val todayData = map?.get(PrefsKey.TODAY_DATA) as? Map<*, *>
+            var todayDataJson: String? = null
+            if (todayData != null) {
+                todayDataJson = JSONObject(todayData).toString()
+            }
+
             val buttons = map?.get(PrefsKey.BUTTONS) as? List<*>
             var buttonsJson: String? = null
             if (buttons != null) {
                 buttonsJson = JSONArray(buttons).toString()
             }
+
+
 
             with(prefs.edit()) {
                 putInt(PrefsKey.NOTIFICATION_ID, id)
@@ -132,14 +174,17 @@ data class NotificationOptions(
                 putBoolean(PrefsKey.IS_STICKY, isSticky)
                 putInt(PrefsKey.VISIBILITY, visibility)
                 putString(PrefsKey.ICON_DATA, iconDataJson)
+                putString(PrefsKey.LARGE_ICON_DATA, largeIconDataJson)
                 putString(PrefsKey.BUTTONS, buttonsJson)
+                putString(PrefsKey.TODAY_DATA, todayDataJson)
                 commit()
             }
         }
 
         fun updateContent(context: Context, map: Map<*, *>?) {
             val prefs = context.getSharedPreferences(
-                PrefsKey.NOTIFICATION_OPTIONS_PREFS_NAME, Context.MODE_PRIVATE)
+                PrefsKey.NOTIFICATION_OPTIONS_PREFS_NAME, Context.MODE_PRIVATE
+            )
 
             val contentTitle = map?.get(PrefsKey.NOTIFICATION_CONTENT_TITLE) as? String
                 ?: prefs.getString(PrefsKey.NOTIFICATION_CONTENT_TITLE, null)
@@ -157,7 +202,8 @@ data class NotificationOptions(
 
         fun clearData(context: Context) {
             val prefs = context.getSharedPreferences(
-                PrefsKey.NOTIFICATION_OPTIONS_PREFS_NAME, Context.MODE_PRIVATE)
+                PrefsKey.NOTIFICATION_OPTIONS_PREFS_NAME, Context.MODE_PRIVATE
+            )
 
             with(prefs.edit()) {
                 clear()

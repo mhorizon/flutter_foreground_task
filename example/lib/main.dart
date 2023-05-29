@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:flutter_foreground_task/models/today_date.dart';
 
 void main() => runApp(const ExampleApp());
 
@@ -22,8 +23,7 @@ class MyTaskHandler extends TaskHandler {
     _sendPort = sendPort;
 
     // You can use the getData function to get the stored data.
-    final customData =
-        await FlutterForegroundTask.getData<String>(key: 'customData');
+    final customData = await FlutterForegroundTask.getData<String>(key: 'customData');
     print('customData: $customData');
   }
 
@@ -129,24 +129,30 @@ class _ExamplePageState extends State<ExamplePage> {
   void _initForegroundTask() {
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
-        id: 500,
-        channelId: 'notification_channel_id',
-        channelName: 'Foreground Notification',
-        channelDescription:
-            'This notification appears when the foreground service is running.',
-        channelImportance: NotificationChannelImportance.LOW,
-        priority: NotificationPriority.LOW,
-        iconData: const NotificationIconData(
-          resType: ResourceType.mipmap,
-          resPrefix: ResourcePrefix.ic,
-          name: 'launcher',
-          backgroundColor: Colors.orange,
-        ),
-        buttons: [
-          const NotificationButton(id: 'sendButton', text: 'Send'),
-          const NotificationButton(id: 'testButton', text: 'Test'),
-        ],
-      ),
+          id: 500,
+          channelId: 'notification_channel_id',
+          channelName: 'Foreground Notification',
+          channelDescription: 'This notification appears when the foreground service is running.',
+          channelImportance: NotificationChannelImportance.LOW,
+          priority: NotificationPriority.LOW,
+          iconData: const NotificationIconData(
+            resType: ResourceType.drawable,
+            resPrefix: ResourcePrefix.ic,
+            name: 'a8',
+            backgroundColor: Colors.transparent,
+          ),
+          largeIconData: const NotificationIconData(
+            resType: ResourceType.drawable,
+            resPrefix: ResourcePrefix.ic,
+            name: 'a8',
+            backgroundColor: Colors.transparent,
+          ),
+          buttons: [
+            const NotificationButton(id: 'sendButton', text: 'Send'),
+            const NotificationButton(id: 'testButton', text: 'Test'),
+          ],
+          todayNotificationData: TodayNotificationData(
+              day: 8, solar: 'دوشنبه - ۸ خرداد ۱۴۰۲', hijri: '٠٩ ذو القعدة ١٤٤٤', gregorian: '29 May 2023')),
       iosNotificationOptions: const IOSNotificationOptions(
         showNotification: true,
         playSound: false,
@@ -222,7 +228,7 @@ class _ExamplePageState extends State<ExamplePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _requestPermissionForAndroid();
       _initForegroundTask();
-
+      _startForegroundTask();
       // You can get the previous ReceivePort without restarting the service.
       if (await FlutterForegroundTask.isRunningService) {
         final newReceivePort = FlutterForegroundTask.receivePort;

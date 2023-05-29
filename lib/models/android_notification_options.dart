@@ -3,6 +3,7 @@ import 'package:flutter_foreground_task/models/notification_channel_importance.d
 import 'package:flutter_foreground_task/models/notification_icon_data.dart';
 import 'package:flutter_foreground_task/models/notification_priority.dart';
 import 'package:flutter_foreground_task/models/notification_visibility.dart';
+import 'package:flutter_foreground_task/models/today_date.dart';
 
 /// Notification options for Android platform.
 class AndroidNotificationOptions {
@@ -20,7 +21,9 @@ class AndroidNotificationOptions {
     this.isSticky = true,
     this.visibility = NotificationVisibility.VISIBILITY_PUBLIC,
     this.iconData,
+    this.largeIconData,
     this.buttons,
+    this.todayNotificationData,
   }) : assert((buttons?.length ?? 0) < 4);
 
   /// Unique ID of the notification.
@@ -70,9 +73,16 @@ class AndroidNotificationOptions {
   /// If the value is null, the app launcher icon is used.
   final NotificationIconData? iconData;
 
+  /// The data of the large icon to display in the notification.
+  /// If the value is null, the app launcher icon is used.
+  final NotificationIconData? largeIconData;
+
   /// A list of buttons to display in the notification.
   /// A maximum of 3 is allowed.
   final List<NotificationButton>? buttons;
+
+  ////customized data for today notification
+  final TodayNotificationData? todayNotificationData;
 
   /// Returns the data fields of [AndroidNotificationOptions] in JSON format.
   Map<String, dynamic> toJson() {
@@ -89,7 +99,9 @@ class AndroidNotificationOptions {
       'isSticky': isSticky,
       'visibility': visibility.rawValue,
       'iconData': iconData?.toJson(),
+      'largeIconData': largeIconData?.toJson(),
       'buttons': buttons?.map((e) => e.toJson()).toList(),
+      'todayData': todayNotificationData?.toJson(),
     };
   }
 }

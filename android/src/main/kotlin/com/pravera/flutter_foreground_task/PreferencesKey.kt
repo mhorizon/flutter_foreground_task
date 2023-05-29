@@ -27,6 +27,8 @@ object PreferencesKey {
     const val IS_STICKY = "isSticky"
     const val VISIBILITY = "visibility"
     const val ICON_DATA = "iconData"
+    const val LARGE_ICON_DATA = "largeIconData"
+    const val TODAY_DATA = "todayData"
     const val BUTTONS = "buttons"
 
     const val FOREGROUND_TASK_OPTIONS_PREFS_NAME = prefix + "FOREGROUND_TASK_OPTIONS"
