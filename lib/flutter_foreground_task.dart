@@ -95,11 +95,15 @@ class FlutterForegroundTask {
 
   /// Update the foreground service.
   static Future<bool> updateService({
+    AndroidNotificationOptions? androidNotificationOptions,
+    IOSNotificationOptions? iosNotificationOptions,
     String? notificationTitle,
     String? notificationText,
     Function? callback,
   }) =>
       FlutterForegroundTaskPlatform.instance.updateService(
+        androidNotificationOptions: androidNotificationOptions,
+        iosNotificationOptions: iosNotificationOptions,
         notificationText: notificationText,
         notificationTitle: notificationTitle,
         callback: callback,

@@ -230,7 +230,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         }
 
         val pendingIntent = getPendingIntent(pm)
-
+        val notificationLayout = RemoteViews(packageName, R.layout.today_layout)
         // Create a notification and start the foreground service.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -246,7 +246,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             nm.createNotificationChannel(channel)
 
-            val notificationLayout = RemoteViews(packageName, R.layout.today_layout)
+
             notificationLayout.setImageViewBitmap(
                 R.id.today_title,
                 text2Bitmap(
@@ -289,8 +289,16 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             builder.setShowWhen(notificationOptions.showWhen)
             builder.setSmallIcon(iconResId)
             builder.setContentIntent(pendingIntent)
-            builder.setContentTitle(notificationOptions.contentTitle)
-            builder.setContentText(notificationOptions.contentText)
+            builder.setLargeIcon(
+                BitmapFactory.decodeResource(
+                    resources,
+                    largeIconResId
+                )
+            )
+            builder.setCustomContentView(notificationLayout)
+            builder.setCustomBigContentView(notificationLayout)
+//            builder.setContentTitle(notificationOptions.contentTitle)
+//            builder.setContentText(notificationOptions.contentText)
             builder.setVisibility(notificationOptions.visibility)
             if (iconBackgroundColor != null) {
                 builder.color = iconBackgroundColor

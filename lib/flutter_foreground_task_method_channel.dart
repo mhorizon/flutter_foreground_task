@@ -31,25 +31,20 @@ class MethodChannelFlutterForegroundTask extends FlutterForegroundTaskPlatform {
     }
 
     // for Android 13
-    final NotificationPermission notificationPermissionStatus =
-        await checkNotificationPermission();
+    final NotificationPermission notificationPermissionStatus = await checkNotificationPermission();
     if (notificationPermissionStatus != NotificationPermission.granted) {
       await requestNotificationPermission();
     }
 
-    final options = Platform.isAndroid
-        ? androidNotificationOptions.toJson()
-        : iosNotificationOptions.toJson();
+    final options = Platform.isAndroid ? androidNotificationOptions.toJson() : iosNotificationOptions.toJson();
     options['notificationContentTitle'] = notificationTitle;
     options['notificationContentText'] = notificationText;
     if (callback != null) {
       options.addAll(foregroundTaskOptions.toJson());
-      options['callbackHandle'] =
-          PluginUtilities.getCallbackHandle(callback)?.toRawHandle();
+      options['callbackHandle'] = PluginUtilities.getCallbackHandle(callback)?.toRawHandle();
     }
 
-    final bool reqResult =
-        await methodChannel.invokeMethod('startService', options);
+    final bool reqResult = await methodChannel.invokeMethod('startService', options);
     if (!reqResult) {
       return false;
     }
@@ -82,18 +77,19 @@ class MethodChannelFlutterForegroundTask extends FlutterForegroundTaskPlatform {
 
   @override
   Future<bool> updateService({
+    AndroidNotificationOptions? androidNotificationOptions,
+    IOSNotificationOptions? iosNotificationOptions,
     String? notificationTitle,
     String? notificationText,
     Function? callback,
   }) async {
     if (await isRunningService) {
-      final options = <String, dynamic>{
-        'notificationContentTitle': notificationTitle,
-        'notificationContentText': notificationText,
-      };
+      final options =
+          Platform.isAndroid ? androidNotificationOptions?.toJson() ?? {} : iosNotificationOptions?.toJson() ?? {};
+      options['notificationContentTitle'] = notificationTitle;
+      options['notificationContentText'] = notificationText;
       if (callback != null) {
-        options['callbackHandle'] =
-            PluginUtilities.getCallbackHandle(callback)?.toRawHandle();
+        options['callbackHandle'] = PluginUtilities.getCallbackHandle(callback)?.toRawHandle();
       }
       return await methodChannel.invokeMethod('updateService', options);
     }
@@ -176,8 +172,7 @@ class MethodChannelFlutterForegroundTask extends FlutterForegroundTaskPlatform {
   @override
   Future<bool> openIgnoreBatteryOptimizationSettings() async {
     if (Platform.isAndroid) {
-      return await methodChannel
-          .invokeMethod('openIgnoreBatteryOptimizationSettings');
+      return await methodChannel.invokeMethod('openIgnoreBatteryOptimizationSettings');
     }
     return true;
   }
@@ -185,8 +180,7 @@ class MethodChannelFlutterForegroundTask extends FlutterForegroundTaskPlatform {
   @override
   Future<bool> requestIgnoreBatteryOptimization() async {
     if (Platform.isAndroid) {
-      return await methodChannel
-          .invokeMethod('requestIgnoreBatteryOptimization');
+      return await methodChannel.invokeMethod('requestIgnoreBatteryOptimization');
     }
     return true;
   }
@@ -212,8 +206,7 @@ class MethodChannelFlutterForegroundTask extends FlutterForegroundTaskPlatform {
   @override
   Future<NotificationPermission> checkNotificationPermission() async {
     if (Platform.isAndroid) {
-      final int result =
-          await methodChannel.invokeMethod('checkNotificationPermission');
+      final int result = await methodChannel.invokeMethod('checkNotificationPermission');
       return getNotificationPermissionFromIndex(result);
     }
     return NotificationPermission.granted;
@@ -222,8 +215,7 @@ class MethodChannelFlutterForegroundTask extends FlutterForegroundTaskPlatform {
   @override
   Future<NotificationPermission> requestNotificationPermission() async {
     if (Platform.isAndroid) {
-      final int result =
-          await methodChannel.invokeMethod('requestNotificationPermission');
+      final int result = await methodChannel.invokeMethod('requestNotificationPermission');
       return getNotificationPermissionFromIndex(result);
     }
     return NotificationPermission.granted;

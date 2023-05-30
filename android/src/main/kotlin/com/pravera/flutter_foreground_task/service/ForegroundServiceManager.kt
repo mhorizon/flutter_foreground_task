@@ -15,108 +15,108 @@ import com.pravera.flutter_foreground_task.models.NotificationOptions
  * @version 1.0
  */
 class ForegroundServiceManager {
-	/**
-	 * Start the foreground service.
-	 *
-	 * @param context context
-	 * @param arguments arguments
-	 */
-	fun start(context: Context, arguments: Any?): Boolean {
-		try {
-			val nIntent = Intent(context, ForegroundService::class.java)
-			val argsMap = arguments as? Map<*, *>
-			ForegroundServiceStatus.putData(context, ForegroundServiceAction.START)
-			ForegroundTaskOptions.putData(context, argsMap)
-			NotificationOptions.putData(context, argsMap)
+    /**
+     * Start the foreground service.
+     *
+     * @param context context
+     * @param arguments arguments
+     */
+    fun start(context: Context, arguments: Any?): Boolean {
+        try {
+            val nIntent = Intent(context, ForegroundService::class.java)
+            val argsMap = arguments as? Map<*, *>
+            ForegroundServiceStatus.putData(context, ForegroundServiceAction.START)
+            ForegroundTaskOptions.putData(context, argsMap)
+            NotificationOptions.putData(context, argsMap)
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				context.startForegroundService(nIntent)
-			} else {
-				context.startService(nIntent)
-			}
-		} catch (e: Exception) {
-			return false
-		}
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(nIntent)
+            } else {
+                context.startService(nIntent)
+            }
+        } catch (e: Exception) {
+            return false
+        }
 
-		return true
-	}
+        return true
+    }
 
-	/**
-	 * Restart the foreground service.
-	 *
-	 * @param context context
-	 * @param arguments arguments
-	 */
-	fun restart(context: Context, arguments: Any?): Boolean {
-		try {
-			val nIntent = Intent(context, ForegroundService::class.java)
-			ForegroundServiceStatus.putData(context, ForegroundServiceAction.RESTART)
+    /**
+     * Restart the foreground service.
+     *
+     * @param context context
+     * @param arguments arguments
+     */
+    fun restart(context: Context, arguments: Any?): Boolean {
+        try {
+            val nIntent = Intent(context, ForegroundService::class.java)
+            ForegroundServiceStatus.putData(context, ForegroundServiceAction.RESTART)
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				context.startForegroundService(nIntent)
-			} else {
-				context.startService(nIntent)
-			}
-		} catch (e: Exception) {
-			return false
-		}
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(nIntent)
+            } else {
+                context.startService(nIntent)
+            }
+        } catch (e: Exception) {
+            return false
+        }
 
-		return true
-	}
+        return true
+    }
 
-	/**
-	 * Update the foreground service.
-	 *
-	 * @param context context
-	 * @param arguments arguments
-	 */
-	fun update(context: Context, arguments: Any?): Boolean {
-		try {
-			val nIntent = Intent(context, ForegroundService::class.java)
-			val argsMap = arguments as? Map<*, *>
-			ForegroundServiceStatus.putData(context, ForegroundServiceAction.UPDATE)
-			ForegroundTaskOptions.updateCallbackHandle(context, argsMap)
-			NotificationOptions.updateContent(context, argsMap)
+    /**
+     * Update the foreground service.
+     *
+     * @param context context
+     * @param arguments arguments
+     */
+    fun update(context: Context, arguments: Any?): Boolean {
+        try {
+            val nIntent = Intent(context, ForegroundService::class.java)
+            val argsMap = arguments as? Map<*, *>
+            ForegroundServiceStatus.putData(context, ForegroundServiceAction.UPDATE)
+            ForegroundTaskOptions.updateCallbackHandle(context, argsMap)
+            NotificationOptions.putData(context, argsMap)
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				context.startForegroundService(nIntent)
-			} else {
-				context.startService(nIntent)
-			}
-		} catch (e: Exception) {
-			return false
-		}
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(nIntent)
+            } else {
+                context.startService(nIntent)
+            }
+        } catch (e: Exception) {
+            return false
+        }
 
-		return true
-	}
+        return true
+    }
 
-	/**
-	 * Stop the foreground service.
-	 *
-	 * @param context context
-	 */
-	fun stop(context: Context): Boolean {
-		// If the service is not running, the stop function is not executed.
-		if (!ForegroundService.isRunningService) return false
+    /**
+     * Stop the foreground service.
+     *
+     * @param context context
+     */
+    fun stop(context: Context): Boolean {
+        // If the service is not running, the stop function is not executed.
+        if (!ForegroundService.isRunningService) return false
 
-		try {
-			val nIntent = Intent(context, ForegroundService::class.java)
-			ForegroundServiceStatus.putData(context, ForegroundServiceAction.STOP)
-			ForegroundTaskOptions.clearData(context)
-			NotificationOptions.clearData(context)
+        try {
+            val nIntent = Intent(context, ForegroundService::class.java)
+            ForegroundServiceStatus.putData(context, ForegroundServiceAction.STOP)
+            ForegroundTaskOptions.clearData(context)
+            NotificationOptions.clearData(context)
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				context.startForegroundService(nIntent)
-			} else {
-				context.startService(nIntent)
-			}
-		} catch (e: Exception) {
-			return false
-		}
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(nIntent)
+            } else {
+                context.startService(nIntent)
+            }
+        } catch (e: Exception) {
+            return false
+        }
 
-		return true
-	}
+        return true
+    }
 
-	/** Returns whether the foreground service is running. */
-	fun isRunningService(): Boolean = ForegroundService.isRunningService
+    /** Returns whether the foreground service is running. */
+    fun isRunningService(): Boolean = ForegroundService.isRunningService
 }
