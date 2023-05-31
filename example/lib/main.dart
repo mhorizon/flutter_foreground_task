@@ -13,7 +13,7 @@ void startCallback() {
   // The setTaskHandler function must be called to handle the task in the background.
   FlutterForegroundTask.setTaskHandler(MyTaskHandler());
 }
-int d = 16;
+int d = 1;
 AndroidNotificationOptions androidBuilder()=> AndroidNotificationOptions(
     id: 500,
     channelId: 'notification_channel_id',
@@ -25,13 +25,13 @@ AndroidNotificationOptions androidBuilder()=> AndroidNotificationOptions(
       resType: ResourceType.drawable,
       resPrefix: ResourcePrefix.ic,
       name: 'a$d',
-
+      backgroundColor: Colors.transparent,
     ),
     largeIconData:  NotificationIconData(
       resType: ResourceType.drawable,
       resPrefix: ResourcePrefix.ic,
       name: 'a$d',
-
+      backgroundColor: Colors.transparent,
     ),
     buttons: [
       const NotificationButton(id: 'sendButton', text: 'Send'),
@@ -54,10 +54,10 @@ class MyTaskHandler extends TaskHandler {
 
   @override
   Future<void> onEvent(DateTime timestamp, SendPort? sendPort) async {
-    if(d==31) {
-      d=0;
-    }
-   d++;
+   //  if(d==31) {
+   //    d=0;
+   //  }
+   // d++;
     FlutterForegroundTask.updateService(
       androidNotificationOptions:androidBuilder(),
       iosNotificationOptions: const IOSNotificationOptions(
@@ -170,13 +170,13 @@ class _ExamplePageState extends State<ExamplePage> {
           iconData: const NotificationIconData(
             resType: ResourceType.drawable,
             resPrefix: ResourcePrefix.ic,
-            name: 'a10',
+            name: 'a1',
             backgroundColor: Colors.transparent,
           ),
           largeIconData: const NotificationIconData(
             resType: ResourceType.drawable,
             resPrefix: ResourcePrefix.ic,
-            name: 'a10',
+            name: 'a1',
             backgroundColor: Colors.transparent,
           ),
           buttons: [

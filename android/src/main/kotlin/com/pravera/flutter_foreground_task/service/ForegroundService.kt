@@ -585,7 +585,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         titleColorInt: String,
         subtitleColorInt: String
     ): Bitmap {
-        val typeface: Typeface = Typeface.createFromAsset(assets, "iransans_fa.ttf")
+        val typeface: Typeface = Typeface.createFromAsset(assets, "iransans_reg.ttf")
         val nightModeFlags: Int = resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK
         val tc = Color.parseColor(titleColorInt)
