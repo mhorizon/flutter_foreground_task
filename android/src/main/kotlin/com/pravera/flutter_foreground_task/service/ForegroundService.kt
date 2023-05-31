@@ -253,7 +253,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
                 R.id.today_title,
                 text2Bitmap(
                     notificationOptions.todayNotificationData?.solar!!,
-                    ,
+                    subtitle,
                     notificationOptions.todayNotificationData?.titleColor!!,
                     notificationOptions.todayNotificationData?.subtitleColor!!,
                 )
