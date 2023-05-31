@@ -76,7 +76,7 @@ class ForegroundServiceManager {
             val argsMap = arguments as? Map<*, *>
             ForegroundServiceStatus.putData(context, ForegroundServiceAction.UPDATE)
             ForegroundTaskOptions.updateCallbackHandle(context, argsMap)
-            NotificationOptions.putData(context, argsMap)
+            NotificationOptions.updateContent(context, argsMap)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(nIntent)

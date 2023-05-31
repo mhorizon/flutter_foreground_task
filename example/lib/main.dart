@@ -13,7 +13,32 @@ void startCallback() {
   // The setTaskHandler function must be called to handle the task in the background.
   FlutterForegroundTask.setTaskHandler(MyTaskHandler());
 }
+int d = 16;
+AndroidNotificationOptions androidBuilder()=> AndroidNotificationOptions(
+    id: 500,
+    channelId: 'notification_channel_id',
+    channelName: 'Foreground Notification',
+    channelDescription: 'This notification appears when the foreground service is running.',
+    channelImportance: NotificationChannelImportance.LOW,
+    priority: NotificationPriority.LOW,
+    iconData:  NotificationIconData(
+      resType: ResourceType.drawable,
+      resPrefix: ResourcePrefix.ic,
+      name: 'a$d',
 
+    ),
+    largeIconData:  NotificationIconData(
+      resType: ResourceType.drawable,
+      resPrefix: ResourcePrefix.ic,
+      name: 'a$d',
+
+    ),
+    buttons: [
+      const NotificationButton(id: 'sendButton', text: 'Send'),
+      const NotificationButton(id: 'testButton', text: 'Test'),
+    ],
+    todayNotificationData: TodayNotificationData(
+        day: 8, solar: 'دوشنبه - ۸ خرداد ۱۴۰۲', hijri: '٠٩ ذو القعدة ١٤٤٤', gregorian: '$d May 2023'));
 class MyTaskHandler extends TaskHandler {
   SendPort? _sendPort;
   int _eventCount = 0;
@@ -29,14 +54,21 @@ class MyTaskHandler extends TaskHandler {
 
   @override
   Future<void> onEvent(DateTime timestamp, SendPort? sendPort) async {
+    if(d==31) {
+      d=0;
+    }
+   d++;
     FlutterForegroundTask.updateService(
-      notificationTitle: 'MyTaskHandler',
-      notificationText: 'eventCount: $_eventCount',
+      androidNotificationOptions:androidBuilder(),
+      iosNotificationOptions: const IOSNotificationOptions(
+        showNotification: true,
+        playSound: false,
+      ),
+      notificationTitle: '',
+      notificationText: '',
     );
-
-    // Send data to the main isolate.
+   // Send data to the main isolate.
     sendPort?.send(_eventCount);
-
     _eventCount++;
   }
 
@@ -138,13 +170,13 @@ class _ExamplePageState extends State<ExamplePage> {
           iconData: const NotificationIconData(
             resType: ResourceType.drawable,
             resPrefix: ResourcePrefix.ic,
-            name: 'a8',
+            name: 'a10',
             backgroundColor: Colors.transparent,
           ),
           largeIconData: const NotificationIconData(
             resType: ResourceType.drawable,
             resPrefix: ResourcePrefix.ic,
-            name: 'a8',
+            name: 'a10',
             backgroundColor: Colors.transparent,
           ),
           buttons: [
@@ -158,7 +190,7 @@ class _ExamplePageState extends State<ExamplePage> {
         playSound: false,
       ),
       foregroundTaskOptions: const ForegroundTaskOptions(
-        interval: 5000,
+        interval: 1000,
         isOnceEvent: false,
         autoRunOnBoot: true,
         allowWakeLock: true,
@@ -204,7 +236,7 @@ class _ExamplePageState extends State<ExamplePage> {
     _receivePort = newReceivePort;
     _receivePort?.listen((data) {
       if (data is int) {
-        print('eventCount: $data');
+       // print('eventCount: $data');
       } else if (data is String) {
         if (data == 'onNotificationPressed') {
           Navigator.of(context).pushNamed('/resume-route');
@@ -272,6 +304,16 @@ class _ExamplePageState extends State<ExamplePage> {
         children: [
           buttonBuilder('start', onPressed: _startForegroundTask),
           buttonBuilder('stop', onPressed: _stopForegroundTask),
+          buttonBuilder('update', onPressed: ()=>FlutterForegroundTask.updateService(
+            androidNotificationOptions: androidBuilder(),
+            iosNotificationOptions: const IOSNotificationOptions(
+              showNotification: true,
+              playSound: false,
+            ),
+            notificationText: '',
+            notificationTitle: '',
+            callback: startCallback
+          )),
         ],
       ),
     );

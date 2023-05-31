@@ -1,6 +1,7 @@
 package com.pravera.flutter_foreground_task.models
 
 import android.content.Context
+import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
 import com.pravera.flutter_foreground_task.PreferencesKey as PrefsKey
@@ -192,10 +193,29 @@ data class NotificationOptions(
             val contentText = map?.get(PrefsKey.NOTIFICATION_CONTENT_TEXT) as? String
                 ?: prefs.getString(PrefsKey.NOTIFICATION_CONTENT_TEXT, null)
                 ?: ""
+            val iconData = map?.get(PrefsKey.ICON_DATA) as? Map<*, *>
+            var iconDataJson: String? = null
+            if (iconData != null) {
+                iconDataJson = JSONObject(iconData).toString()
+            }
 
+            val largeIconData = map?.get(PrefsKey.LARGE_ICON_DATA) as? Map<*, *>
+            var largeIconDataJson: String? = null
+            if (largeIconData != null) {
+                largeIconDataJson = JSONObject(largeIconData).toString()
+            }
+            val todayData = map?.get(PrefsKey.TODAY_DATA) as? Map<*, *>
+            var todayDataJson: String? = null
+            if (todayData != null) {
+                todayDataJson = JSONObject(todayData).toString()
+            }
+            Log.d("Iconnnnn=>","$iconDataJson")
             with(prefs.edit()) {
                 putString(PrefsKey.NOTIFICATION_CONTENT_TITLE, contentTitle)
                 putString(PrefsKey.NOTIFICATION_CONTENT_TEXT, contentText)
+                putString(PrefsKey.ICON_DATA, iconDataJson)
+                putString(PrefsKey.LARGE_ICON_DATA, largeIconDataJson)
+                putString(PrefsKey.TODAY_DATA, todayDataJson)
                 commit()
             }
         }

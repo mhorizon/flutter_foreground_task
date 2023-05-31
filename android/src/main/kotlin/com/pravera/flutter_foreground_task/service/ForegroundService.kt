@@ -201,7 +201,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             )
         }
         Log.d("iconId", "$iconResId")
-        Log.d("drawId", "${R.drawable.a8}")
+        Log.d("drawId", "${R.drawable.a10}")
         ////large date
         val largeIconResType = notificationOptions.largeIconData?.resType
         val largeIconResPrefix = notificationOptions.largeIconData?.resPrefix
@@ -273,9 +273,9 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
 //            builder.setContentTitle(notificationOptions.contentTitle)
 //            builder.setContentText(notificationOptions.contentText)
             builder.setVisibility(notificationOptions.visibility)
-            if (iconBackgroundColor != null) {
-                builder.setColor(iconBackgroundColor)
-            }
+//            if (iconBackgroundColor != null) {
+//                builder.setColor(iconBackgroundColor)
+//            }
             for (action in buildButtonActions()) {
                 builder.addAction(action)
             }
