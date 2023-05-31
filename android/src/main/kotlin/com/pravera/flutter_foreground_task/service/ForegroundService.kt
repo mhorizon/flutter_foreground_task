@@ -246,12 +246,14 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             nm.createNotificationChannel(channel)
 
-
+            var subtitle = notificationOptions.todayNotificationData?.hijri!!
+            if (!notificationOptions.todayNotificationData?.gregorian.isNullOrEmpty())
+                subtitle += " - " + notificationOptions.todayNotificationData?.gregorian!!
             notificationLayout.setImageViewBitmap(
                 R.id.today_title,
                 text2Bitmap(
                     notificationOptions.todayNotificationData?.solar!!,
-                    notificationOptions.todayNotificationData?.hijri!! + " - " + notificationOptions.todayNotificationData?.gregorian!!,
+                    ,
                     notificationOptions.todayNotificationData?.titleColor!!,
                     notificationOptions.todayNotificationData?.subtitleColor!!,
                 )
