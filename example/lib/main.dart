@@ -13,32 +13,41 @@ void startCallback() {
   // The setTaskHandler function must be called to handle the task in the background.
   FlutterForegroundTask.setTaskHandler(MyTaskHandler());
 }
+
 int d = 1;
-AndroidNotificationOptions androidBuilder()=> AndroidNotificationOptions(
-    id: 500,
-    channelId: 'notification_channel_id',
-    channelName: 'Foreground Notification',
-    channelDescription: 'This notification appears when the foreground service is running.',
-    channelImportance: NotificationChannelImportance.LOW,
-    priority: NotificationPriority.LOW,
-    iconData:  NotificationIconData(
-      resType: ResourceType.drawable,
-      resPrefix: ResourcePrefix.ic,
-      name: 'a$d',
-      backgroundColor: Colors.transparent,
-    ),
-    largeIconData:  NotificationIconData(
-      resType: ResourceType.drawable,
-      resPrefix: ResourcePrefix.ic,
-      name: 'a$d',
-      backgroundColor: Colors.transparent,
-    ),
-    buttons: [
-      const NotificationButton(id: 'sendButton', text: 'Send'),
-      const NotificationButton(id: 'testButton', text: 'Test'),
-    ],
-    todayNotificationData: TodayNotificationData(
-        day: 8, solar: 'دوشنبه - ۸ خرداد ۱۴۰۲', hijri: '٠٩ ذو القعدة ١٤٤٤', gregorian: '$d May 2023'));
+
+AndroidNotificationOptions androidBuilder() {
+  DateTime time = DateTime.now();
+  return AndroidNotificationOptions(
+      id: 500,
+      channelId: 'notification_channel_id',
+      channelName: 'Foreground Notification',
+      channelDescription: 'This notification appears when the foreground service is running.',
+      channelImportance: NotificationChannelImportance.LOW,
+      priority: NotificationPriority.LOW,
+      iconData: NotificationIconData(
+        resType: ResourceType.drawable,
+        resPrefix: ResourcePrefix.ic,
+        name: 'a$d',
+        backgroundColor: Colors.transparent,
+      ),
+      largeIconData: NotificationIconData(
+        resType: ResourceType.drawable,
+        resPrefix: ResourcePrefix.ic,
+        name: 'a$d',
+        backgroundColor: Colors.transparent,
+      ),
+      buttons: [
+        const NotificationButton(id: 'sendButton', text: 'Send'),
+        const NotificationButton(id: 'testButton', text: 'Test'),
+      ],
+      todayNotificationData: TodayNotificationData(
+          day: 8,
+          solar: 'دوشنبه - ۸ خرداد ۱۴۰۲',
+          hijri: '٠٩ ذو القعدة ١٤٤٤',
+          gregorian: '${time.day}/${time.month}/${time.year}'));
+}
+
 class MyTaskHandler extends TaskHandler {
   SendPort? _sendPort;
   int _eventCount = 0;
@@ -49,17 +58,17 @@ class MyTaskHandler extends TaskHandler {
 
     // You can use the getData function to get the stored data.
     final customData = await FlutterForegroundTask.getData<String>(key: 'customData');
-    print('customData: $customData');
+    //print('customData: $customData');
   }
 
   @override
   Future<void> onEvent(DateTime timestamp, SendPort? sendPort) async {
-   //  if(d==31) {
-   //    d=0;
-   //  }
-   // d++;
+    //  if(d==31) {
+    //    d=0;
+    //  }
+    // d++;
     FlutterForegroundTask.updateService(
-      androidNotificationOptions:androidBuilder(),
+      androidNotificationOptions: androidBuilder(),
       iosNotificationOptions: const IOSNotificationOptions(
         showNotification: true,
         playSound: false,
@@ -67,7 +76,7 @@ class MyTaskHandler extends TaskHandler {
       notificationTitle: '',
       notificationText: '',
     );
-   // Send data to the main isolate.
+    // Send data to the main isolate.
     sendPort?.send(_eventCount);
     _eventCount++;
   }
@@ -96,6 +105,19 @@ class MyTaskHandler extends TaskHandler {
     // signal it to restore state when the app is already started.
     FlutterForegroundTask.launchApp("/resume-route");
     _sendPort?.send('onNotificationPressed');
+  }
+
+  @override
+  void onDateChanged() {
+    FlutterForegroundTask.updateService(
+      androidNotificationOptions: androidBuilder(),
+      iosNotificationOptions: const IOSNotificationOptions(
+        showNotification: true,
+        playSound: false,
+      ),
+      notificationTitle: '',
+      notificationText: '',
+    );
   }
 }
 
@@ -151,7 +173,7 @@ class _ExamplePageState extends State<ExamplePage> {
 
     // Android 13 and higher, you need to allow notification permission to expose foreground service notification.
     final NotificationPermission notificationPermissionStatus =
-        await FlutterForegroundTask.checkNotificationPermission();
+    await FlutterForegroundTask.checkNotificationPermission();
     if (notificationPermissionStatus != NotificationPermission.granted) {
       // This function requires `android.permission.POST_NOTIFICATIONS` permission.
       await FlutterForegroundTask.requestNotificationPermission();
@@ -159,42 +181,20 @@ class _ExamplePageState extends State<ExamplePage> {
   }
 
   void _initForegroundTask() {
+    DateTime time = DateTime.now();
     FlutterForegroundTask.init(
-      androidNotificationOptions: AndroidNotificationOptions(
-          id: 500,
-          channelId: 'notification_channel_id',
-          channelName: 'Foreground Notification',
-          channelDescription: 'This notification appears when the foreground service is running.',
-          channelImportance: NotificationChannelImportance.LOW,
-          priority: NotificationPriority.LOW,
-          iconData: const NotificationIconData(
-            resType: ResourceType.drawable,
-            resPrefix: ResourcePrefix.ic,
-            name: 'a1',
-            backgroundColor: Colors.transparent,
-          ),
-          largeIconData: const NotificationIconData(
-            resType: ResourceType.drawable,
-            resPrefix: ResourcePrefix.ic,
-            name: 'a1',
-            backgroundColor: Colors.transparent,
-          ),
-          buttons: [
-            const NotificationButton(id: 'sendButton', text: 'Send'),
-            const NotificationButton(id: 'testButton', text: 'Test'),
-          ],
-          todayNotificationData: TodayNotificationData(
-              day: 8, solar: 'دوشنبه - ۸ خرداد ۱۴۰۲', hijri: '٠٩ ذو القعدة ١٤٤٤', gregorian: '29 May 2023')),
+      androidNotificationOptions: androidBuilder(),
       iosNotificationOptions: const IOSNotificationOptions(
         showNotification: true,
         playSound: false,
       ),
       foregroundTaskOptions: const ForegroundTaskOptions(
-        interval: 1000,
+        interval: 1000 * 60 * 60,
         isOnceEvent: false,
         autoRunOnBoot: true,
         allowWakeLock: true,
         allowWifiLock: true,
+
       ),
     );
   }
@@ -236,7 +236,7 @@ class _ExamplePageState extends State<ExamplePage> {
     _receivePort = newReceivePort;
     _receivePort?.listen((data) {
       if (data is int) {
-       // print('eventCount: $data');
+        // print('eventCount: $data');
       } else if (data is String) {
         if (data == 'onNotificationPressed') {
           Navigator.of(context).pushNamed('/resume-route');
@@ -304,16 +304,17 @@ class _ExamplePageState extends State<ExamplePage> {
         children: [
           buttonBuilder('start', onPressed: _startForegroundTask),
           buttonBuilder('stop', onPressed: _stopForegroundTask),
-          buttonBuilder('update', onPressed: ()=>FlutterForegroundTask.updateService(
-            androidNotificationOptions: androidBuilder(),
-            iosNotificationOptions: const IOSNotificationOptions(
-              showNotification: true,
-              playSound: false,
-            ),
-            notificationText: '',
-            notificationTitle: '',
-            callback: startCallback
-          )),
+          buttonBuilder('update', onPressed: () =>
+              FlutterForegroundTask.updateService(
+                  androidNotificationOptions: androidBuilder(),
+                  iosNotificationOptions: const IOSNotificationOptions(
+                    showNotification: true,
+                    playSound: false,
+                  ),
+                  notificationText: '',
+                  notificationTitle: '',
+                  callback: startCallback
+              ),),
         ],
       ),
     );

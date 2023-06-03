@@ -44,6 +44,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         private const val ACTION_TASK_DESTROY = "onDestroy"
         private const val ACTION_BUTTON_PRESSED = "onButtonPressed"
         private const val ACTION_NOTIFICATION_PRESSED = "onNotificationPressed"
+        private const val ACTION_DATE_CHANGED = "onDateChanged"
         private const val DATA_FIELD_NAME = "data"
 
         /** Returns whether the foreground service is running. */
@@ -76,7 +77,17 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             }
         }
     }
-
+    private var dateChangedReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            try {
+                val action = intent?.action ?: return
+                val data = intent.getStringExtra(DATA_FIELD_NAME)
+                backgroundChannel?.invokeMethod(ACTION_DATE_CHANGED, data)
+            } catch (e: Exception) {
+                Log.e(TAG, "onReceive", e)
+            }
+        }
+    }
     override fun onCreate() {
         super.onCreate()
         fetchDataFromPreferences()
@@ -168,6 +179,12 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             addAction(ACTION_NOTIFICATION_PRESSED)
         }
         registerReceiver(broadcastReceiver, intentFilter)
+        val dateIntentFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_DATE_CHANGED)
+            addAction(Intent.ACTION_TIME_CHANGED)
+            addAction(Intent.ACTION_TIMEZONE_CHANGED)
+        }
+        registerReceiver(dateChangedReceiver, dateIntentFilter)
     }
 
     private fun unregisterBroadcastReceiver() {
@@ -200,8 +217,8 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
                 iconResType, iconResPrefix, iconName
             )
         }
-        Log.d("iconId", "$iconResId")
-        Log.d("drawId", "${R.drawable.a10}")
+//        Log.d("iconId", "$iconResId")
+//        Log.d("drawId", "${R.drawable.a10}")
         ////large date
         val largeIconResType = notificationOptions.largeIconData?.resType
         val largeIconResPrefix = notificationOptions.largeIconData?.resPrefix
@@ -493,7 +510,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             String.format("img_%s", name)
         }
         resName = name
-        Log.d("icon", resName)
+        // Log.d("icon", resName)
         return applicationContext.resources.getIdentifier(
             resName,
             resType,

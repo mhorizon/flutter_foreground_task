@@ -209,7 +209,7 @@ data class NotificationOptions(
             if (todayData != null) {
                 todayDataJson = JSONObject(todayData).toString()
             }
-            Log.d("Iconnnnn=>","$iconDataJson")
+          //  Log.d("Iconnnnn=>","$iconDataJson")
             with(prefs.edit()) {
                 putString(PrefsKey.NOTIFICATION_CONTENT_TITLE, contentTitle)
                 putString(PrefsKey.NOTIFICATION_CONTENT_TEXT, contentText)

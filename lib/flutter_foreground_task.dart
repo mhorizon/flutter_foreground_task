@@ -41,7 +41,7 @@ abstract class TaskHandler {
 
   /// Called when the notification button on the Android platform is pressed.
   void onButtonPressed(String id) {}
-
+  void onDateChanged() {}
   /// Called when the notification itself on the Android platform is pressed.
   ///
   /// "android.permission.SYSTEM_ALERT_WINDOW" permission must be granted for
@@ -273,6 +273,9 @@ class FlutterForegroundTask {
           break;
         case 'onButtonPressed':
           handler.onButtonPressed(call.arguments.toString());
+          break;
+        case 'onDateChanged':
+          handler.onDateChanged();
           break;
         case 'onNotificationPressed':
           handler.onNotificationPressed();
