@@ -80,6 +80,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
     private var dateChangedReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             try {
+                Log.d("dateChangedReceiver","ACTION_DATE_CHANGED")
                 val action = intent?.action ?: return
                 val data = intent.getStringExtra(DATA_FIELD_NAME)
                 backgroundChannel?.invokeMethod(ACTION_DATE_CHANGED, data)
