@@ -28,13 +28,13 @@ AndroidNotificationOptions androidBuilder() {
       iconData: NotificationIconData(
         resType: ResourceType.drawable,
         resPrefix: ResourcePrefix.ic,
-        name: 'a$d',
+        name: 'a${d}_fa',
         backgroundColor: Colors.transparent,
       ),
       largeIconData: NotificationIconData(
         resType: ResourceType.drawable,
         resPrefix: ResourcePrefix.ic,
-        name: 'a$d',
+        name: 'a${d}_fa',
         backgroundColor: Colors.transparent,
       ),
       buttons: [
@@ -173,7 +173,7 @@ class _ExamplePageState extends State<ExamplePage> {
 
     // Android 13 and higher, you need to allow notification permission to expose foreground service notification.
     final NotificationPermission notificationPermissionStatus =
-    await FlutterForegroundTask.checkNotificationPermission();
+        await FlutterForegroundTask.checkNotificationPermission();
     if (notificationPermissionStatus != NotificationPermission.granted) {
       // This function requires `android.permission.POST_NOTIFICATIONS` permission.
       await FlutterForegroundTask.requestNotificationPermission();
@@ -194,7 +194,6 @@ class _ExamplePageState extends State<ExamplePage> {
         autoRunOnBoot: true,
         allowWakeLock: true,
         allowWifiLock: true,
-
       ),
     );
   }
@@ -304,17 +303,18 @@ class _ExamplePageState extends State<ExamplePage> {
         children: [
           buttonBuilder('start', onPressed: _startForegroundTask),
           buttonBuilder('stop', onPressed: _stopForegroundTask),
-          buttonBuilder('update', onPressed: () =>
-              FlutterForegroundTask.updateService(
-                  androidNotificationOptions: androidBuilder(),
-                  iosNotificationOptions: const IOSNotificationOptions(
-                    showNotification: true,
-                    playSound: false,
-                  ),
-                  notificationText: '',
-                  notificationTitle: '',
-                  callback: startCallback
-              ),),
+          buttonBuilder(
+            'update',
+            onPressed: () => FlutterForegroundTask.updateService(
+                androidNotificationOptions: androidBuilder(),
+                iosNotificationOptions: const IOSNotificationOptions(
+                  showNotification: true,
+                  playSound: false,
+                ),
+                notificationText: '',
+                notificationTitle: '',
+                callback: startCallback),
+          ),
         ],
       ),
     );
