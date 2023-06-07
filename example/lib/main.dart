@@ -62,7 +62,7 @@ AndroidNotificationOptions androidBuilder() {
       '19:37',
       '11:58',
     ]),
-    showToday: false,
+    showToday: true,
     showPray: true,
   );
 }
