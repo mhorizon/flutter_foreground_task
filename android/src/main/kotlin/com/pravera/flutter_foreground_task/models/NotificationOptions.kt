@@ -24,6 +24,9 @@ data class NotificationOptions(
     val largeIconData: NotificationIconData?,
     val buttons: List<NotificationButton>,
     val todayNotificationData: TodayNotificationData?,
+    val prayNotificationData: PrayNotificationData?,
+    val showToday: Boolean,
+    val showPray: Boolean,
 ) {
     companion object {
         fun getData(context: Context): NotificationOptions {
@@ -80,6 +83,29 @@ data class NotificationOptions(
                     subtitleColor = todayDataJsonObj.getString("subtitleColor"),
                 )
             }
+
+            val prayNotificationDataJson = prefs.getString(PrefsKey.PRAY_DATA, null)
+            var prayNotificationData: PrayNotificationData? = null
+            if (prayNotificationDataJson != null) {
+                val prayDataJsonObj = JSONObject(prayNotificationDataJson)
+//                val jArr1 = prayDataJsonObj.getString("titles").split(",")
+//                val jArr2 = prayDataJsonObj.getString("times").split(",")
+                val titles = prayDataJsonObj.getString("titles").split(",")
+                val times = prayDataJsonObj.getString("times").split(",")
+//                for (i in 0 until jArr1.length()) {
+//                    titles.add(jArr1.getString(i))
+//                }
+//                for (i in 0 until jArr2.length()) {
+//                    times.add(jArr1.getString(i))
+//                }
+                prayNotificationData = PrayNotificationData(
+                    titles = titles,
+                    times = times,
+                )
+            }
+            val showToday = prefs.getBoolean(PrefsKey.SHOW_TODAY, true)
+            val showPray = prefs.getBoolean(PrefsKey.SHOW_PRAY, false)
+            Log.d("notification options", "$showPray => ${prayNotificationData?.titles?.size}")
             val buttonsJson = prefs.getString(PrefsKey.BUTTONS, null)
             val buttons: MutableList<NotificationButton> = mutableListOf()
             if (buttonsJson != null) {
@@ -94,6 +120,7 @@ data class NotificationOptions(
                     )
                 }
             }
+
 
             return NotificationOptions(
                 id = id,
@@ -112,7 +139,10 @@ data class NotificationOptions(
                 iconData = iconData,
                 largeIconData = largeIconData,
                 buttons = buttons,
-                todayNotificationData = todayNotificationData
+                todayNotificationData = todayNotificationData,
+                prayNotificationData = prayNotificationData,
+                showToday = showToday,
+                showPray = showPray,
             )
         }
 
@@ -152,6 +182,14 @@ data class NotificationOptions(
                 todayDataJson = JSONObject(todayData).toString()
             }
 
+            val prayData = map?.get(PrefsKey.PRAY_DATA) as? Map<*, *>
+            var prayDataJson: String? = null
+            if (prayData != null) {
+                prayDataJson = JSONObject(prayData).toString()
+            }
+            val showPray = map?.get(PrefsKey.SHOW_PRAY) as? Boolean ?: false
+            val showToday = map?.get(PrefsKey.SHOW_TODAY) as? Boolean ?: true
+
             val buttons = map?.get(PrefsKey.BUTTONS) as? List<*>
             var buttonsJson: String? = null
             if (buttons != null) {
@@ -159,7 +197,7 @@ data class NotificationOptions(
             }
 
 
-
+            Log.d("notification options 2", "$showPray")
             with(prefs.edit()) {
                 putInt(PrefsKey.NOTIFICATION_ID, id)
                 putString(PrefsKey.NOTIFICATION_CHANNEL_ID, channelId)
@@ -178,6 +216,9 @@ data class NotificationOptions(
                 putString(PrefsKey.LARGE_ICON_DATA, largeIconDataJson)
                 putString(PrefsKey.BUTTONS, buttonsJson)
                 putString(PrefsKey.TODAY_DATA, todayDataJson)
+                putString(PrefsKey.PRAY_DATA, prayDataJson)
+                putBoolean(PrefsKey.SHOW_TODAY, showToday)
+                putBoolean(PrefsKey.SHOW_PRAY, showPray)
                 commit()
             }
         }
@@ -209,13 +250,26 @@ data class NotificationOptions(
             if (todayData != null) {
                 todayDataJson = JSONObject(todayData).toString()
             }
-          //  Log.d("Iconnnnn=>","$iconDataJson")
+            val prayData = map?.get(PrefsKey.PRAY_DATA) as? Map<*, *>
+            var prayDataJson: String? = null
+            if (prayData != null) {
+                prayDataJson = JSONObject(prayData).toString()
+            }
+            val showToday = map?.get(PrefsKey.SHOW_TODAY) as? Boolean
+                ?: prefs.getBoolean(PrefsKey.SHOW_TODAY, true)
+            val showPray = map?.get(PrefsKey.SHOW_PRAY) as? Boolean
+                ?: prefs.getBoolean(PrefsKey.SHOW_PRAY, false)
+            Log.d("notification options 3", "$showPray")
+            //  Log.d("Iconnnnn=>","$iconDataJson")
             with(prefs.edit()) {
                 putString(PrefsKey.NOTIFICATION_CONTENT_TITLE, contentTitle)
                 putString(PrefsKey.NOTIFICATION_CONTENT_TEXT, contentText)
                 putString(PrefsKey.ICON_DATA, iconDataJson)
                 putString(PrefsKey.LARGE_ICON_DATA, largeIconDataJson)
                 putString(PrefsKey.TODAY_DATA, todayDataJson)
+                putString(PrefsKey.PRAY_DATA, prayDataJson)
+                putBoolean(PrefsKey.SHOW_PRAY, showPray)
+                putBoolean(PrefsKey.SHOW_TODAY, showToday)
                 commit()
             }
         }
@@ -231,4 +285,5 @@ data class NotificationOptions(
             }
         }
     }
+    fun prayId():Int = id*10
 }

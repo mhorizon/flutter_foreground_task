@@ -3,6 +3,7 @@ package com.pravera.flutter_foreground_task
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 
 import com.pravera.flutter_foreground_task.errors.ErrorCodes
 import com.pravera.flutter_foreground_task.models.NotificationPermission
@@ -30,7 +31,7 @@ class MethodCallHandlerImpl(private val context: Context, private val provider: 
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         val args = call.arguments
-
+        Log.d("onMethodCasddasdll:", "$args")
         when (call.method) {
             "checkNotificationPermission" -> {
                 checkActivityNull(result)?.let {

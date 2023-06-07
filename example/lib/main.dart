@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:flutter_foreground_task/models/today_date.dart';
+import 'package:flutter_foreground_task/models/pray_data.dart';
+import 'package:flutter_foreground_task/models/today_data.dart';
 
 void main() => runApp(const ExampleApp());
 
@@ -18,34 +20,51 @@ int d = 1;
 
 AndroidNotificationOptions androidBuilder() {
   DateTime time = DateTime.now();
+  log('flutter update',name: 'notif builder');
   return AndroidNotificationOptions(
-      id: 500,
-      channelId: 'notification_channel_id',
-      channelName: 'Foreground Notification',
-      channelDescription: 'This notification appears when the foreground service is running.',
-      channelImportance: NotificationChannelImportance.LOW,
-      priority: NotificationPriority.LOW,
-      iconData: NotificationIconData(
-        resType: ResourceType.drawable,
-        resPrefix: ResourcePrefix.ic,
-        name: 'a${d}_fa',
-        backgroundColor: Colors.transparent,
-      ),
-      largeIconData: NotificationIconData(
-        resType: ResourceType.drawable,
-        resPrefix: ResourcePrefix.ic,
-        name: 'a${d}_fa',
-        backgroundColor: Colors.transparent,
-      ),
-      buttons: [
-        const NotificationButton(id: 'sendButton', text: 'Send'),
-        const NotificationButton(id: 'testButton', text: 'Test'),
-      ],
-      todayNotificationData: TodayNotificationData(
-          day: 8,
-          solar: 'دوشنبه - ۸ خرداد ۱۴۰۲',
-          hijri: '٠٩ ذو القعدة ١٤٤٤',
-          gregorian: '${time.day}/${time.month}/${time.year}'));
+    id: 500,
+    channelId: 'notification_channel_id',
+    channelName: 'Foreground Notification',
+    channelDescription: 'This notification appears when the foreground service is running.',
+    channelImportance: NotificationChannelImportance.LOW,
+    priority: NotificationPriority.LOW,
+    iconData: NotificationIconData(
+      resType: ResourceType.drawable,
+      resPrefix: ResourcePrefix.ic,
+      name: 'a${d}_fa',
+      backgroundColor: Colors.transparent,
+    ),
+    largeIconData: NotificationIconData(
+      resType: ResourceType.drawable,
+      resPrefix: ResourcePrefix.ic,
+      name: 'a${d}_fa',
+      backgroundColor: Colors.transparent,
+    ),
+    buttons: [
+      const NotificationButton(id: 'sendButton', text: 'Send'),
+      const NotificationButton(id: 'testButton', text: 'Test'),
+    ],
+    todayNotificationData: TodayNotificationData(
+        day: 8,
+        solar: 'دوشنبه - ۸ خرداد ۱۴۰۲',
+        hijri: '٠٩ ذو القعدة ١٤٤٤',
+        gregorian: '${time.day}/${time.month}/${time.year}'),
+    prayNotificationData: PrayNotificationData(titles: [
+      'صبح',
+      'طلوع',
+      'ظهر',
+      'مغرب',
+      'نیمه',
+    ], times: [
+      '03:12',
+      '05:10',
+      '12:12',
+      '19:37',
+      '11:58',
+    ]),
+    showToday: false,
+    showPray: true,
+  );
 }
 
 class MyTaskHandler extends TaskHandler {
@@ -67,17 +86,18 @@ class MyTaskHandler extends TaskHandler {
     //    d=0;
     //  }
     // d++;
-    FlutterForegroundTask.updateService(
-      androidNotificationOptions: androidBuilder(),
-      iosNotificationOptions: const IOSNotificationOptions(
-        showNotification: true,
-        playSound: false,
-      ),
-      notificationTitle: '',
-      notificationText: '',
-    );
+    log('event!!!');
+    // FlutterForegroundTask.updateService(
+    //   androidNotificationOptions: androidBuilder(),
+    //   iosNotificationOptions: const IOSNotificationOptions(
+    //     showNotification: true,
+    //     playSound: false,
+    //   ),
+    //   notificationTitle: '',
+    //   notificationText: '',
+    // );
     // Send data to the main isolate.
-    sendPort?.send(_eventCount);
+  //  sendPort?.send(_eventCount);
     _eventCount++;
   }
 
@@ -109,6 +129,7 @@ class MyTaskHandler extends TaskHandler {
 
   @override
   void onDateChanged() {
+    log('date changed!!!');
     FlutterForegroundTask.updateService(
       androidNotificationOptions: androidBuilder(),
       iosNotificationOptions: const IOSNotificationOptions(
@@ -305,15 +326,18 @@ class _ExamplePageState extends State<ExamplePage> {
           buttonBuilder('stop', onPressed: _stopForegroundTask),
           buttonBuilder(
             'update',
-            onPressed: () => FlutterForegroundTask.updateService(
-                androidNotificationOptions: androidBuilder(),
-                iosNotificationOptions: const IOSNotificationOptions(
-                  showNotification: true,
-                  playSound: false,
-                ),
-                notificationText: '',
-                notificationTitle: '',
-                callback: startCallback),
+            onPressed: () {
+              log('button pressed!!!');
+              FlutterForegroundTask.updateService(
+                  androidNotificationOptions: androidBuilder(),
+                  iosNotificationOptions: const IOSNotificationOptions(
+                    showNotification: true,
+                    playSound: false,
+                  ),
+                  notificationText: '',
+                  notificationTitle: '',
+                  callback: startCallback);
+            },
           ),
         ],
       ),

@@ -3,7 +3,8 @@ import 'package:flutter_foreground_task/models/notification_channel_importance.d
 import 'package:flutter_foreground_task/models/notification_icon_data.dart';
 import 'package:flutter_foreground_task/models/notification_priority.dart';
 import 'package:flutter_foreground_task/models/notification_visibility.dart';
-import 'package:flutter_foreground_task/models/today_date.dart';
+import 'package:flutter_foreground_task/models/pray_data.dart';
+import 'package:flutter_foreground_task/models/today_data.dart';
 
 /// Notification options for Android platform.
 class AndroidNotificationOptions {
@@ -24,6 +25,9 @@ class AndroidNotificationOptions {
     this.largeIconData,
     this.buttons,
     this.todayNotificationData,
+    this.prayNotificationData,
+    this.showToday = true,
+    this.showPray = false,
   }) : assert((buttons?.length ?? 0) < 4);
 
   /// Unique ID of the notification.
@@ -84,6 +88,12 @@ class AndroidNotificationOptions {
   ////customized data for today notification
   final TodayNotificationData? todayNotificationData;
 
+  ////customized data for today notification
+  final PrayNotificationData? prayNotificationData;
+
+  final bool showToday;
+  final bool showPray;
+
   /// Returns the data fields of [AndroidNotificationOptions] in JSON format.
   Map<String, dynamic> toJson() {
     return {
@@ -102,6 +112,9 @@ class AndroidNotificationOptions {
       'largeIconData': largeIconData?.toJson(),
       'buttons': buttons?.map((e) => e.toJson()).toList(),
       'todayData': todayNotificationData?.toJson(),
+      'prayData': prayNotificationData?.toJson(),
+      "showToday" :showToday,
+      "showPray" :showPray,
     };
   }
 }

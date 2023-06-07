@@ -80,7 +80,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
     private var dateChangedReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             try {
-                Log.d("dateChangedReceiver","ACTION_DATE_CHANGED")
+                Log.d("dateChangedReceiver", "ACTION_DATE_CHANGED")
                 val action = intent?.action ?: return
                 val data = intent.getStringExtra(DATA_FIELD_NAME)
                 backgroundChannel?.invokeMethod(ACTION_DATE_CHANGED, data)
@@ -89,6 +89,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             }
         }
     }
+
     override fun onCreate() {
         super.onCreate()
         fetchDataFromPreferences()
@@ -195,6 +196,14 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
     @SuppressLint("WrongConstant")
     private fun startForegroundService() {
         // Get the icon and PendingIntent to put in the notification.
+        Log.d("show today", "${notificationOptions.showToday}")
+        if (!notificationOptions.showToday) {
+            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            nm.cancel(notificationOptions.id)
+            Log.d("startForegroundService", "cancellllllllllllllll")
+            startForegroundServicePray()
+            return
+        }
         val pm = applicationContext.packageManager
         val iconResType = notificationOptions.iconData?.resType
         val iconResPrefix = notificationOptions.iconData?.resPrefix
@@ -302,6 +311,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
             }
+            builder.setGroup("Calendar")
             startForeground(notificationOptions.id, builder.build())
         } else {
             val builder = NotificationCompat.Builder(this, notificationOptions.channelId)
@@ -333,9 +343,179 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             for (action in buildButtonCompatActions()) {
                 builder.addAction(action)
             }
+            builder.setGroup("Calendar")
             startForeground(notificationOptions.id, builder.build())
+            /////////////////////
+            ////pray part////////
+            /////////////////////
+
+            /////////////////////
+            /////////////////////
+            /////////////////////
         }
 
+        acquireLockMode()
+        isRunningService = true
+        Log.d("startForegroundService", "continueeeeeeeeeeeeeeeeeeeeeee")
+        startForegroundServicePray()
+    }
+
+    @SuppressLint("WrongConstant")
+    private fun startForegroundServicePray() {
+        Log.d("foreg1", "line 360")
+        // Get the icon and PendingIntent to put in the notification.
+        if (!notificationOptions.showPray) {
+            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            nm.cancel(notificationOptions.prayId())
+            return
+        }
+        val pm = applicationContext.packageManager
+        val iconResId = getDrawableResourceId("drawable", "", "ic_launcher_white")
+//        Log.d("iconId", "$iconResId")
+//        Log.d("drawId", "${R.drawable.a10}")
+        ////large date
+
+        val largeIconResId = getDrawableResourceId("drawable", "", "ic_launcher")
+
+
+        val pendingIntent = getPendingIntent(pm)
+        val notificationLayout = RemoteViews(packageName, R.layout.pray_layout)
+        val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // Create a notification and start the foreground service.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                notificationOptions.channelId + " Pray",
+                notificationOptions.channelName,
+                notificationOptions.channelImportance
+            )
+            channel.description = notificationOptions.channelDescription
+            channel.enableVibration(notificationOptions.enableVibration)
+            if (!notificationOptions.playSound) {
+                channel.setSound(null, null)
+            }
+            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            nm.createNotificationChannel(channel)
+
+            var subtitle = notificationOptions.todayNotificationData?.hijri!!
+            if (!notificationOptions.todayNotificationData?.gregorian.isNullOrEmpty())
+                subtitle += " - " + notificationOptions.todayNotificationData?.gregorian!!
+            notificationLayout.setImageViewBitmap(
+                R.id.title_1,
+                text2Bitmap2(
+                    notificationOptions.prayNotificationData?.titles?.get(0) ?: "",
+                    notificationOptions.prayNotificationData?.times?.get(0) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.title_2,
+                text2Bitmap2(
+                    notificationOptions.prayNotificationData?.titles?.get(1) ?: "",
+                    notificationOptions.prayNotificationData?.times?.get(1) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.title_3,
+                text2Bitmap2(
+                    notificationOptions.prayNotificationData?.titles?.get(2) ?: "",
+                    notificationOptions.prayNotificationData?.times?.get(2) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.title_4,
+                text2Bitmap2(
+                    notificationOptions.prayNotificationData?.titles?.get(3) ?: "",
+                    notificationOptions.prayNotificationData?.times?.get(3) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.title_5,
+                text2Bitmap2(
+                    notificationOptions.prayNotificationData?.titles?.get(4) ?: "",
+                    notificationOptions.prayNotificationData?.times?.get(4) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                )
+            )
+            val builder = Notification.Builder(this, notificationOptions.channelId + " Pray")
+            builder.setOngoing(true)
+            builder.setShowWhen(notificationOptions.showWhen)
+            builder.setSmallIcon(iconResId)
+            builder.setLargeIcon(
+                BitmapFactory.decodeResource(
+                    resources,
+                    largeIconResId
+                )
+            )
+            builder.setContentIntent(pendingIntent)
+            builder.setCustomContentView(notificationLayout)
+            builder.setCustomBigContentView(notificationLayout)
+//            builder.setContentTitle(notificationOptions.contentTitle)
+//            builder.setContentText(notificationOptions.contentText)
+            builder.setVisibility(notificationOptions.visibility)
+//            if (iconBackgroundColor != null) {
+//                builder.setColor(iconBackgroundColor)
+//            }
+            for (action in buildButtonActions()) {
+                builder.addAction(action)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
+            }
+            Log.d("foreg1", "line 431")
+            builder.setGroup("Pray")
+            if (notificationOptions.showToday)
+                nm.notify(notificationOptions.prayId(), builder.build())
+            else
+                startForeground(notificationOptions.prayId(), builder.build())
+        } else {
+            val builder = NotificationCompat.Builder(this, notificationOptions.channelId + " Pray")
+            builder.setOngoing(true)
+            builder.setShowWhen(notificationOptions.showWhen)
+            builder.setSmallIcon(iconResId)
+            builder.setContentIntent(pendingIntent)
+            builder.setGroup("Pray")
+            builder.setLargeIcon(
+                BitmapFactory.decodeResource(
+                    resources,
+                    largeIconResId
+                )
+            )
+            builder.color = Color.WHITE
+            builder.setCustomContentView(notificationLayout)
+            builder.setCustomBigContentView(notificationLayout)
+//            builder.setContentTitle(notificationOptions.contentTitle)
+//            builder.setContentText(notificationOptions.contentText)
+            builder.setVisibility(notificationOptions.visibility)
+            if (!notificationOptions.enableVibration) {
+                builder.setVibrate(longArrayOf(0L))
+            }
+            if (!notificationOptions.playSound) {
+                builder.setSound(null)
+            }
+            builder.priority = notificationOptions.priority
+            for (action in buildButtonCompatActions()) {
+                builder.addAction(action)
+            }
+            if (notificationOptions.showToday)
+                nm.notify(notificationOptions.prayId(), builder.build())
+            else
+                startForeground(notificationOptions.prayId(), builder.build())
+            /////////////////////
+            ////pray part////////
+            /////////////////////
+
+            /////////////////////
+            /////////////////////
+            /////////////////////
+        }
         acquireLockMode()
         isRunningService = true
     }
@@ -636,6 +816,74 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         paint2.style = Paint.Style.FILL
         paint2.color = subtitleColor
         paint2.textSize = 40f
+        paint2.textAlign = Paint.Align.RIGHT
+        val rect = Rect()
+        paint.getTextBounds(title, 0, title.length, rect)
+
+        val height = rect.height()
+        val width = rect.width()
+        val rect2 = Rect()
+        paint2.getTextBounds(subtitle, 0, subtitle.length, rect2)
+        val f: Float = resources.displayMetrics.scaledDensity
+        val i3 = (f * 10.0f).toInt()
+        val height2 = rect2.height()
+        val width2 = rect2.width()
+        val i4 = (if (width > width2) width else width2)
+        val i5 = i4 - width
+        val createBitmap =
+            Bitmap.createBitmap(i4, height2 + height + i3 + 10, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(createBitmap)
+
+        canvas.drawText(title, (width + i5).toFloat(), (-paint.fontMetrics.ascent) + 5.0f, paint)
+        canvas.drawText(
+            subtitle,
+            (width2 + ((i4 - width2) / 2)).toFloat(),
+            (((height + 5) + i3)).toFloat() + 24f,
+            paint2
+        )
+
+        return createBitmap
+    }
+
+    private fun text2Bitmap2(
+        title: String,
+        subtitle: String,
+        titleColorInt: String,
+        subtitleColorInt: String
+    ): Bitmap {
+        val typeface: Typeface = Typeface.createFromAsset(assets, "iransans_reg.ttf")
+        val nightModeFlags: Int = resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK
+        val tc = Color.parseColor(titleColorInt)
+        val stc = Color.parseColor(subtitleColorInt)
+        val titleColor = when (nightModeFlags) {
+            Configuration.UI_MODE_NIGHT_YES -> Color.WHITE
+            Configuration.UI_MODE_NIGHT_NO -> tc
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> tc
+            else -> tc
+        }
+        val subtitleColor = when (nightModeFlags) {
+            Configuration.UI_MODE_NIGHT_YES -> Color.WHITE
+            Configuration.UI_MODE_NIGHT_NO -> stc
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> stc
+            else -> stc
+        }
+        val paint = Paint()
+        paint.isAntiAlias = true
+        paint.isSubpixelText = true
+        paint.typeface = typeface
+        paint.style = Paint.Style.FILL
+        paint.color = titleColor
+        paint.textSize = 40f
+        paint.textAlign = Paint.Align.RIGHT
+
+        val paint2 = Paint()
+        paint2.isAntiAlias = true
+        paint2.isSubpixelText = true
+        paint2.typeface = typeface
+        paint2.style = Paint.Style.FILL
+        paint2.color = subtitleColor
+        paint2.textSize = 32f
         paint2.textAlign = Paint.Align.RIGHT
         val rect = Rect()
         paint.getTextBounds(title, 0, title.length, rect)

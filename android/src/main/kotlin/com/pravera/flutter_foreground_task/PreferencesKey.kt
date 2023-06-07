@@ -29,6 +29,9 @@ object PreferencesKey {
     const val ICON_DATA = "iconData"
     const val LARGE_ICON_DATA = "largeIconData"
     const val TODAY_DATA = "todayData"
+    const val PRAY_DATA = "prayData"
+    const val SHOW_TODAY = "showToday"
+    const val SHOW_PRAY = "showPray"
     const val BUTTONS = "buttons"
 
     const val FOREGROUND_TASK_OPTIONS_PREFS_NAME = prefix + "FOREGROUND_TASK_OPTIONS"

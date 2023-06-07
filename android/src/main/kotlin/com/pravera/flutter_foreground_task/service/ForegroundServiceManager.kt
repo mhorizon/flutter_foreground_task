@@ -3,6 +3,7 @@ package com.pravera.flutter_foreground_task.service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import com.pravera.flutter_foreground_task.models.ForegroundServiceAction
 import com.pravera.flutter_foreground_task.models.ForegroundServiceStatus
 import com.pravera.flutter_foreground_task.models.ForegroundTaskOptions
@@ -71,6 +72,9 @@ class ForegroundServiceManager {
      * @param arguments arguments
      */
     fun update(context: Context, arguments: Any?): Boolean {
+        if(arguments==null)
+            return false
+        Log.d("update: ", "$arguments")
         try {
             val nIntent = Intent(context, ForegroundService::class.java)
             val argsMap = arguments as? Map<*, *>
