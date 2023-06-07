@@ -54,7 +54,7 @@ AndroidNotificationOptions androidBuilder() {
       'طلوع',
       'ظهر',
       'مغرب',
-      'نیمه',
+      'نیمه شب',
     ], times: [
       '03:12',
       '05:10',
