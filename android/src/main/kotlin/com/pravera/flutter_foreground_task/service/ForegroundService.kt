@@ -285,7 +285,9 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
                     notificationOptions.todayNotificationData?.subtitleColor!!,
                 )
             )
-
+            notificationLayout.setImageViewResource(R.id.today_subtitle,iconResId)
+            notificationLayout.setInt(R.id.today_subtitle, "setColorFilter",
+                iconBackgroundColor!!)
             val builder = Notification.Builder(this, notificationOptions.channelId)
             builder.setOngoing(true)
             builder.setShowWhen(notificationOptions.showWhen)
@@ -399,18 +401,88 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             var subtitle = notificationOptions.todayNotificationData?.hijri!!
             if (!notificationOptions.todayNotificationData?.gregorian.isNullOrEmpty())
                 subtitle += " - " + notificationOptions.todayNotificationData?.gregorian!!
-val fontSize = 36f;
-            notificationLayout.setImageViewBitmap(R.id.title_v2_1,text2Bitmap3(notificationOptions.prayNotificationData?.titles?.get(0) ?: "",notificationOptions.todayNotificationData?.titleColor!!,fontSize))
-            notificationLayout.setImageViewBitmap(R.id.title_v2_2,text2Bitmap3(notificationOptions.prayNotificationData?.titles?.get(1) ?: "",notificationOptions.todayNotificationData?.titleColor!!,fontSize))
-            notificationLayout.setImageViewBitmap(R.id.title_v2_3,text2Bitmap3(notificationOptions.prayNotificationData?.titles?.get(2) ?: "",notificationOptions.todayNotificationData?.titleColor!!,fontSize))
-            notificationLayout.setImageViewBitmap(R.id.title_v2_4,text2Bitmap3(notificationOptions.prayNotificationData?.titles?.get(3) ?: "",notificationOptions.todayNotificationData?.titleColor!!,fontSize))
-            notificationLayout.setImageViewBitmap(R.id.title_v2_5,text2Bitmap3(notificationOptions.prayNotificationData?.titles?.get(4) ?: "",notificationOptions.todayNotificationData?.titleColor!!,fontSize))
+            val fontSize = 36f
+            notificationLayout.setImageViewBitmap(
+                R.id.title_v2_1,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.titles?.get(0) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    fontSize
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.title_v2_2,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.titles?.get(1) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    fontSize
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.title_v2_3,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.titles?.get(2) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    fontSize
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.title_v2_4,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.titles?.get(3) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    fontSize
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.title_v2_5,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.titles?.get(4) ?: "",
+                    notificationOptions.todayNotificationData?.titleColor!!,
+                    fontSize
+                )
+            )
 
-            notificationLayout.setImageViewBitmap(R.id.text_v2_1,text2Bitmap3(notificationOptions.prayNotificationData?.times?.get(0) ?: "",notificationOptions.todayNotificationData?.subtitleColor!!,fontSize))
-            notificationLayout.setImageViewBitmap(R.id.text_v2_2,text2Bitmap3(notificationOptions.prayNotificationData?.times?.get(1) ?: "",notificationOptions.todayNotificationData?.subtitleColor!!,fontSize))
-            notificationLayout.setImageViewBitmap(R.id.text_v2_3,text2Bitmap3(notificationOptions.prayNotificationData?.times?.get(2) ?: "",notificationOptions.todayNotificationData?.subtitleColor!!,fontSize))
-            notificationLayout.setImageViewBitmap(R.id.text_v2_4,text2Bitmap3(notificationOptions.prayNotificationData?.times?.get(3) ?: "",notificationOptions.todayNotificationData?.subtitleColor!!,fontSize))
-            notificationLayout.setImageViewBitmap(R.id.text_v2_5,text2Bitmap3(notificationOptions.prayNotificationData?.times?.get(4) ?: "",notificationOptions.todayNotificationData?.subtitleColor!!,fontSize))
+            notificationLayout.setImageViewBitmap(
+                R.id.text_v2_1,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.times?.get(0) ?: "",
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                    fontSize
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.text_v2_2,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.times?.get(1) ?: "",
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                    fontSize
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.text_v2_3,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.times?.get(2) ?: "",
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                    fontSize
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.text_v2_4,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.times?.get(3) ?: "",
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                    fontSize
+                )
+            )
+            notificationLayout.setImageViewBitmap(
+                R.id.text_v2_5,
+                text2Bitmap3(
+                    notificationOptions.prayNotificationData?.times?.get(4) ?: "",
+                    notificationOptions.todayNotificationData?.subtitleColor!!,
+                    fontSize
+                )
+            )
 
 //            notificationLayout.setImageViewBitmap(
 //                R.id.title_1,
@@ -847,7 +919,7 @@ val fontSize = 36f;
             Bitmap.createBitmap(i4, height2 + height + i3 + 10, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(createBitmap)
 
-        canvas.drawText(title, (width + i5).toFloat(), (-paint.fontMetrics.ascent) , paint)
+        canvas.drawText(title, (width + i5).toFloat(), (-paint.fontMetrics.ascent), paint)
         canvas.drawText(
             subtitle,
             (width2 + ((i4 - width2) / 2)).toFloat(),
@@ -861,7 +933,7 @@ val fontSize = 36f;
     private fun text2Bitmap3(
         title: String,
         titleColorInt: String,
-        fontSize:Float,
+        fontSize: Float,
     ): Bitmap {
         val typeface: Typeface = Typeface.createFromAsset(assets, "iransans_reg.ttf")
         val nightModeFlags: Int = resources.configuration.uiMode and
@@ -885,7 +957,6 @@ val fontSize = 36f;
         paint.textAlign = Paint.Align.RIGHT
 
 
-
         val rect = Rect()
         paint.getTextBounds(title, 0, title.length, rect)
 
@@ -902,7 +973,7 @@ val fontSize = 36f;
         val createBitmap =
             Bitmap.createBitmap(i4, height2 + height + i3 + 10, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(createBitmap)
-        canvas.drawText(title, (width).toFloat(), (-paint.fontMetrics.ascent) , paint)
+        canvas.drawText(title, (width).toFloat(), (-paint.fontMetrics.ascent), paint)
         return createBitmap
     }
 }
