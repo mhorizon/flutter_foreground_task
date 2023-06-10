@@ -185,6 +185,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             addAction(Intent.ACTION_DATE_CHANGED)
             addAction(Intent.ACTION_TIME_CHANGED)
             addAction(Intent.ACTION_TIMEZONE_CHANGED)
+            addAction(Intent.ACTION_CONFIGURATION_CHANGED)
         }
         registerReceiver(dateChangedReceiver, dateIntentFilter)
     }
