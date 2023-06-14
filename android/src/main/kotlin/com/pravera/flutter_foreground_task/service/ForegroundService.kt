@@ -902,7 +902,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         paint.typeface = typeface
         paint.style = Paint.Style.FILL
         paint.color = titleColor
-        paint.textSize = 56f
+        paint.textSize = 50f
         paint.textAlign = Paint.Align.RIGHT
 
         val paint2 = Paint()

@@ -15,10 +15,10 @@
 
     <ImageView
         android:id="@+id/today_subtitle"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="4dp"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
         android:src="@drawable/ic_launcher_white" />
 </LinearLayout>
