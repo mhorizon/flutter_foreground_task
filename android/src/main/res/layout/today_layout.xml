@@ -15,9 +15,9 @@
 
     <ImageView
         android:id="@+id/today_subtitle"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="0dp"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
         android:src="@drawable/ic_launcher_white" />
