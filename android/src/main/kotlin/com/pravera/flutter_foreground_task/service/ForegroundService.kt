@@ -398,7 +398,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 notificationOptions.channelId + " Pray",
-                notificationOptions.channelName,
+                notificationOptions.channelName+ " Pray",
                 notificationOptions.channelImportance
             )
             channel.description = notificationOptions.channelDescription

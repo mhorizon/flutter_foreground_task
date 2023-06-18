@@ -31,13 +31,13 @@ AndroidNotificationOptions androidBuilder() {
     iconData: NotificationIconData(
       resType: ResourceType.drawable,
       resPrefix: ResourcePrefix.ic,
-      name: 'a${d}_fa',
+      name: 'a${d}',
       backgroundColor: Colors.transparent,
     ),
     largeIconData: NotificationIconData(
       resType: ResourceType.drawable,
       resPrefix: ResourcePrefix.ic,
-      name: 'a${d}_fa',
+      name: 'a${d}',
       backgroundColor: Colors.transparent,
     ),
     buttons: [
@@ -166,6 +166,7 @@ class ExamplePage extends StatefulWidget {
 
 class _ExamplePageState extends State<ExamplePage> {
   ReceivePort? _receivePort;
+  int count = 0;
 
   Future<void> _requestPermissionForAndroid() async {
     if (!Platform.isAndroid) {
@@ -219,7 +220,6 @@ class _ExamplePageState extends State<ExamplePage> {
   }
 
   Future<bool> _startForegroundTask() async {
-
     // You can save data using the saveData function.
     await FlutterForegroundTask.saveData(key: 'customData', value: 'hello');
 
@@ -322,6 +322,11 @@ class _ExamplePageState extends State<ExamplePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          buttonBuilder('plus => $count', onPressed: () {
+            setState(() {
+              ++count;
+            });
+          }),
           buttonBuilder('start', onPressed: _startForegroundTask),
           buttonBuilder('stop', onPressed: _stopForegroundTask),
           buttonBuilder(
