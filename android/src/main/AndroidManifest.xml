@@ -5,7 +5,6 @@
         <receiver
             android:name=".service.BootReceiver"
             android:enabled="true"
-
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -14,6 +13,7 @@
         <receiver
             android:name=".service.RestartReceiver"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            />
     </application>
 </manifest>

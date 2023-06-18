@@ -20,7 +20,7 @@ int d = 1;
 
 AndroidNotificationOptions androidBuilder() {
   DateTime time = DateTime.now();
-  log('flutter update',name: 'notif builder');
+  log('flutter update', name: 'notif builder');
   return AndroidNotificationOptions(
     id: 500,
     channelId: 'notification_channel_id',
@@ -97,7 +97,7 @@ class MyTaskHandler extends TaskHandler {
     //   notificationText: '',
     // );
     // Send data to the main isolate.
-  //  sendPort?.send(_eventCount);
+    //  sendPort?.send(_eventCount);
     _eventCount++;
   }
 
@@ -202,7 +202,6 @@ class _ExamplePageState extends State<ExamplePage> {
   }
 
   void _initForegroundTask() {
-    DateTime time = DateTime.now();
     FlutterForegroundTask.init(
       androidNotificationOptions: androidBuilder(),
       iosNotificationOptions: const IOSNotificationOptions(
@@ -220,6 +219,7 @@ class _ExamplePageState extends State<ExamplePage> {
   }
 
   Future<bool> _startForegroundTask() async {
+
     // You can save data using the saveData function.
     await FlutterForegroundTask.saveData(key: 'customData', value: 'hello');
 
@@ -235,7 +235,7 @@ class _ExamplePageState extends State<ExamplePage> {
       return FlutterForegroundTask.restartService();
     } else {
       return FlutterForegroundTask.startService(
-        notificationTitle: 'Foreground Service is running',
+        notificationTitle: 'Foreground Service is runningsdfdsf',
         notificationText: 'Tap to return to the app',
         callback: startCallback,
       );

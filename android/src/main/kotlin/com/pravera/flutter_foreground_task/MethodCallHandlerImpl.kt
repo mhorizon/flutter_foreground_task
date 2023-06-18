@@ -32,6 +32,7 @@ class MethodCallHandlerImpl(private val context: Context, private val provider: 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         val args = call.arguments
         Log.d("onMethodCasddasdll:", "$args")
+        Log.d("onMethodCasddasdlk:", "${call.method}")
         when (call.method) {
             "checkNotificationPermission" -> {
                 checkActivityNull(result)?.let {
@@ -39,6 +40,7 @@ class MethodCallHandlerImpl(private val context: Context, private val provider: 
                     result.success(status.ordinal)
                 }
             }
+
             "requestNotificationPermission" -> {
                 checkActivityNull(result)?.let {
                     val callback = object : NotificationPermissionCallback {
@@ -53,26 +55,34 @@ class MethodCallHandlerImpl(private val context: Context, private val provider: 
                     provider.getNotificationPermissionManager().requestPermission(it, callback)
                 }
             }
+
             "startService" ->
                 result.success(provider.getForegroundServiceManager().start(context, args))
+
             "restartService" ->
                 result.success(provider.getForegroundServiceManager().restart(context, args))
+
             "updateService" ->
                 result.success(provider.getForegroundServiceManager().update(context, args))
+
             "stopService" ->
                 result.success(provider.getForegroundServiceManager().stop(context))
+
             "isRunningService" ->
                 result.success(provider.getForegroundServiceManager().isRunningService())
+
             "minimizeApp" -> {
                 checkActivityNull(result)?.let {
                     ForegroundServiceUtils.minimizeApp(it)
                 }
             }
+
             "launchApp" -> {
                 if (args is String?) {
                     ForegroundServiceUtils.launchApp(context, args)
                 }
             }
+
             "isAppOnForeground" -> result.success(ForegroundServiceUtils.isAppOnForeground(context))
             "setOnLockScreenVisibility" -> {
                 checkActivityNull(result)?.let {
@@ -81,21 +91,25 @@ class MethodCallHandlerImpl(private val context: Context, private val provider: 
                     ForegroundServiceUtils.setOnLockScreenVisibility(it, isVisible)
                 }
             }
+
             "wakeUpScreen" -> ForegroundServiceUtils.wakeUpScreen(context)
             "isIgnoringBatteryOptimizations" ->
                 result.success(ForegroundServiceUtils.isIgnoringBatteryOptimizations(context))
+
             "openIgnoreBatteryOptimizationSettings" -> {
                 checkActivityNull(result)?.let {
                     methodCallResult1 = result
                     ForegroundServiceUtils.openIgnoreBatteryOptimizationSettings(it, 246)
                 }
             }
+
             "requestIgnoreBatteryOptimization" -> {
                 checkActivityNull(result)?.let {
                     methodCallResult2 = result
                     ForegroundServiceUtils.requestIgnoreBatteryOptimization(it, 247)
                 }
             }
+
             "canDrawOverlays" -> result.success(ForegroundServiceUtils.canDrawOverlays(context))
             "openSystemAlertWindowSettings" -> {
                 checkActivityNull(result)?.let {
@@ -105,14 +119,25 @@ class MethodCallHandlerImpl(private val context: Context, private val provider: 
                     ForegroundServiceUtils.openSystemAlertWindowSettings(it, 248, forceOpen)
                 }
             }
+
             else -> result.notImplemented()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         when (requestCode) {
-            246 -> methodCallResult1?.success(ForegroundServiceUtils.isIgnoringBatteryOptimizations(context))
-            247 -> methodCallResult2?.success(ForegroundServiceUtils.isIgnoringBatteryOptimizations(context))
+            246 -> methodCallResult1?.success(
+                ForegroundServiceUtils.isIgnoringBatteryOptimizations(
+                    context
+                )
+            )
+
+            247 -> methodCallResult2?.success(
+                ForegroundServiceUtils.isIgnoringBatteryOptimizations(
+                    context
+                )
+            )
+
             248 -> methodCallResult3?.success(ForegroundServiceUtils.canDrawOverlays(context))
         }
 

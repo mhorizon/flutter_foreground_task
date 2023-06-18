@@ -618,7 +618,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
 
     private fun stopForegroundService() {
         releaseLockMode()
-        stopForeground(true)
+        stopForeground(false)
         stopSelf()
         isRunningService = false
     }

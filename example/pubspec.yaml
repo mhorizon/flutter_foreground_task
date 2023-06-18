@@ -21,6 +21,7 @@ dependencies:
     # the parent directory to use the current plugin's version.
     path: ../
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
