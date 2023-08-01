@@ -466,7 +466,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             notificationLayout.setImageViewBitmap(
                 R.id.text_v2_2,
                 text2Bitmap3(
-                    notificationOptions.prayNotificationData?.times?.get(0) ?: "",
+                    notificationOptions.prayNotificationData?.times?.get(1) ?: "",
                     notificationOptions.todayNotificationData?.subtitleColor!!,
                     fontSize
                 )
