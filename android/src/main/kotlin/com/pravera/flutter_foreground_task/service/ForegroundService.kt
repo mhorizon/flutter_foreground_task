@@ -10,6 +10,7 @@ import android.graphics.*
 import android.net.wifi.WifiManager
 import android.os.*
 import android.util.Log
+import android.util.TypedValue
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.pravera.flutter_foreground_task.R
@@ -412,7 +413,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             var subtitle = notificationOptions.todayNotificationData?.hijri?:""
             if (!notificationOptions.todayNotificationData?.gregorian.isNullOrEmpty())
                 subtitle += " - " + notificationOptions.todayNotificationData?.gregorian!!
-            val fontSize = 32f
+            val fontSize = 13f
             notificationLayout.setImageViewBitmap(
                 R.id.title_v2_1,
                 text2Bitmap3(
@@ -465,7 +466,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             notificationLayout.setImageViewBitmap(
                 R.id.text_v2_2,
                 text2Bitmap3(
-                    notificationOptions.prayNotificationData?.times?.get(1) ?: "",
+                    notificationOptions.prayNotificationData?.times?.get(0) ?: "",
                     notificationOptions.todayNotificationData?.subtitleColor!!,
                     fontSize
                 )
@@ -856,7 +857,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         paint.typeface = typeface
         paint.style = Paint.Style.FILL
         paint.color = titleColor
-        paint.textSize = 56f
+        paint.textSize = spToPx(18f)
         paint.textAlign = Paint.Align.RIGHT
 
         val paint2 = Paint()
@@ -865,7 +866,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         paint2.typeface = typeface
         paint2.style = Paint.Style.FILL
         paint2.color = subtitleColor
-        paint2.textSize = 40f
+        paint2.textSize = spToPx(14f)
         paint2.textAlign = Paint.Align.RIGHT
         val rect = Rect()
         paint.getTextBounds(title, 0, title.length, rect)
@@ -911,14 +912,15 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             Configuration.UI_MODE_NIGHT_UNDEFINED -> tc
             else -> tc
         }
-
+        val fs = spToPx(fontSize)
+        Log.d("ForegroundServiceSpToPx", "FS:$fs")
         val paint = Paint()
         paint.isAntiAlias = true
         paint.isSubpixelText = true
         paint.typeface = typeface
         paint.style = Paint.Style.FILL
         paint.color = titleColor
-        paint.textSize = fontSize
+        paint.textSize = spToPx(fontSize)
         paint.textAlign = Paint.Align.RIGHT
 
 
@@ -940,5 +942,12 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         val canvas = Canvas(createBitmap)
         canvas.drawText(title, (width).toFloat(), (-paint.fontMetrics.ascent), paint)
         return createBitmap
+    }
+    private fun spToPx(sp: Float): Float {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            sp,
+            resources.displayMetrics
+        )
     }
 }
