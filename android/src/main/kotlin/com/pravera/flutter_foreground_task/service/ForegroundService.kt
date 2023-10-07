@@ -286,7 +286,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
                     notificationOptions.todayNotificationData?.subtitleColor!!,
                 )
             )
-            notificationLayout.setImageViewResource(R.id.today_subtitle, iconResId)
+            notificationLayout.setImageViewResource(R.id.today_icon, iconResId)
             val nightModeFlags: Int = resources.configuration.uiMode and
                     Configuration.UI_MODE_NIGHT_MASK
             val iconColor = when (nightModeFlags) {
@@ -296,7 +296,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
                 else -> iconBackgroundColor
             }
             notificationLayout.setInt(
-                R.id.today_subtitle, "setColorFilter",
+                R.id.today_icon, "setColorFilter",
                 iconColor!!
             )
             val builder = Notification.Builder(this, notificationOptions.channelId)
@@ -934,7 +934,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
         canvas.drawText(
             subtitle,
             (width2 + ((i4 - width2) / 2)).toFloat(),
-            (((height + 16) + i3)).toFloat() + 24f,
+            (((height + 16) + i3)).toFloat() + 0f,
             paint2
         )
 
