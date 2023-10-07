@@ -22,4 +22,10 @@
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
         android:src="@drawable/ic_launcher_white" />
+    <LinearLayout
+        android:layout_width="12dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp" />
 </LinearLayout>
