@@ -180,14 +180,24 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
             addAction(ACTION_BUTTON_PRESSED)
             addAction(ACTION_NOTIFICATION_PRESSED)
         }
-        registerReceiver(broadcastReceiver, intentFilter)
+        if (Build.VERSION.SDK_INT > 32) {
+            registerReceiver(broadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+        }
+        else {
+            registerReceiver(broadcastReceiver, intentFilter)
+        }
         val dateIntentFilter = IntentFilter().apply {
             addAction(Intent.ACTION_DATE_CHANGED)
             addAction(Intent.ACTION_TIME_CHANGED)
             addAction(Intent.ACTION_TIMEZONE_CHANGED)
             addAction(Intent.ACTION_CONFIGURATION_CHANGED)
         }
-        registerReceiver(dateChangedReceiver, dateIntentFilter)
+        if (Build.VERSION.SDK_INT > 32) {
+            registerReceiver(dateChangedReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+        }
+        else {
+            registerReceiver(dateChangedReceiver, intentFilter)
+        }
     }
 
     private fun unregisterBroadcastReceiver() {
@@ -309,6 +319,7 @@ class ForegroundService : Service(), MethodChannel.MethodCallHandler {
                     largeIconResId
                 )
             )
+
             builder.setContentIntent(pendingIntent)
             builder.setCustomContentView(notificationLayout)
             builder.setCustomBigContentView(notificationLayout)
